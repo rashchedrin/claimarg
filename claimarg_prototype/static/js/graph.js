@@ -8,7 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 nodes: new vis.DataSet(data.nodes),
                 edges: new vis.DataSet(data.edges)
             };
-            var options = {};
+            var options = {
+                edges: {
+                    arrows: {
+                        to: { enabled: true, scaleFactor: 1, type: 'arrow' }
+                    }
+                }
+                // Include other options as needed
+            };
             new vis.Network(container, graphData, options);
         });
 });
