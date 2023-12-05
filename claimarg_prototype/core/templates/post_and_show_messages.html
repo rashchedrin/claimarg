@@ -1,0 +1,29 @@
+<!-- core/templates/post_and_show_messages.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Messages</title>
+</head>
+<body>
+    <h1>Post a Message</h1>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="content" placeholder="Your message"></textarea><br>
+        <select name="type">
+            <option value="claim">Claim</option>
+            <option value="argument">Argument</option>
+            <option value="question">Question</option>
+        </select><br>
+        <input type="submit" value="Post Message">
+    </form>
+
+    <h2>All Messages</h2>
+    <ul>
+        {% for message in messages %}
+            <li><strong>{{ message.type }}:</strong> {{ message.content }}</li>
+        {% empty %}
+            <li>No messages found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

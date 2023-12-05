@@ -14,9 +14,10 @@ def post_message(request):
             type=message_type,
             author=default_user
         )
-        return redirect(reverse('success'))  # Redirect to a success page or home
+        return redirect(reverse('post_message'))  # Redirect to a success page or home
 
-    return render(request, 'post_message.html')  # Render the form template
+    messages = Message.objects.all()  # Retrieve all messages for display
+    return render(request, 'post_and_show_messages.html', {'messages': messages})
 
 
 def success(request):
