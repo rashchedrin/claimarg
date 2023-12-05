@@ -54,7 +54,11 @@ def create_link(request):
 
 
 def graph_data(request):
-    nodes = [{'id': message.id, 'label': message.content, 'group': message.type} for message in Message.objects.all()]
-    edges = [{'from': link.source_message.id, 'to': link.target_message.id} for link in Link.objects.all()]
-
+    nodes = [{'id': message.id, 
+              'label': message.content, 
+              'group': message.type} for message in Message.objects.all()]
+    edges = [{'from': link.source_message.id, 
+              'to': link.target_message.id, 
+              'link_type': link.link_type} for link in Link.objects.all()]
+    
     return JsonResponse({'nodes': nodes, 'edges': edges})
