@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Link, Message
+from django.http import JsonResponse
+
 
 def post_message(request):
     if request.method == 'POST':
@@ -50,3 +52,9 @@ def create_link(request):
 
     return render(request, 'create_link.html')
 
+
+def graph_data(request):
+    nodes = [{'id': message.id, 'label': message.content, 'group': message.type} for message in Message.objects.all()]
+    edges = [{'from': link.source_message.id, 'to': link.target_message.id} for link in Link.objects.all()]
+
+    return JsonResponse({'nodes': nodes, 'edges': edges})
