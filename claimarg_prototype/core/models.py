@@ -19,11 +19,18 @@ class Message(models.Model):
 
 
 class Link(models.Model):
+    LINK_TYPES = (
+        ('proves', 'Proves'),
+        ('disproves', 'Disproves'),
+        ('is_premise_of', 'Is Premise Of'),
+    )
+
     source_message = models.ForeignKey(Message, related_name='source_links', on_delete=models.CASCADE)
     target_message = models.ForeignKey(Message, related_name='target_links', on_delete=models.CASCADE, null=True, blank=True)
     target_link = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    link_type = models.CharField(max_length=20, choices=LINK_TYPES)
 
     # Ensure that either target_message or target_link is set, but not both.
     def clean(self):

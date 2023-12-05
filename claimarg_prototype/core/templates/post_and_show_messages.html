@@ -25,5 +25,45 @@
             <li>No messages found.</li>
         {% endfor %}
     </ul>
+
+    <h2>All Links</h2>
+    <ul>
+        {% for link in links %}
+            <li>
+                {{ link.source_message.content }} 
+                <strong>{{ link.link_type }}</strong> 
+                {{ link.target_message.content }}
+            </li>
+        {% empty %}
+            <li>No links found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Create a Link</h2>
+    <form method="post" action="{% url 'create_link' %}">
+        {% csrf_token %}
+        <label for="source_message">Source Message:</label><br>
+        <select id="source_message" name="source_message">
+            {% for message in messages %}
+                <option value="{{ message.id }}">{{ message.content }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="link_type">Link Type:</label><br>
+        <select id="link_type" name="link_type">
+            <option value="proves">Proves</option>
+            <option value="disproves">Disproves</option>
+            <option value="is_premise_of">Is Premise Of</option>
+        </select><br>
+
+        <label for="target_message">Target Message:</label><br>
+        <select id="target_message" name="target_message">
+            {% for message in messages %}
+                <option value="{{ message.id }}">{{ message.content }}</option>
+            {% endfor %}
+        </select><br>
+        <input type="submit" value="Create Link">
+    </form>
+
 </body>
 </html>
