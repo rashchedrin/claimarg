@@ -23,6 +23,7 @@ class Link(models.Model):
         ('proves', 'Proves'),
         ('disproves', 'Disproves'),
         ('is_premise_of', 'Is Premise Of'),
+        ('answers', 'Answers'),
     )
 
     source_message = models.ForeignKey(Message, related_name='source_links', on_delete=models.CASCADE)
