@@ -1,97 +1,17 @@
-<!-- core/templates/post_and_show_messages.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Messages</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="{% static 'js/graph.js' %}"></script>
 </head>
 <body>
-    <h1>Post a Message</h1>
-    <form method="post">
-        {% csrf_token %}
-        <textarea name="content" placeholder="Your message"></textarea><br>
-        <select name="type">
-            <option value="claim">Claim</option>
-            <option value="argument">Argument</option>
-            <option value="question">Question</option>
-        </select><br>
-        <input type="submit" value="Post Message">
-    </form>
-
-    <h2>All Messages</h2>
-    <ul>
-        {% for message in messages %}
-            <li><strong>{{ message.type }}:</strong> {{ message.content }}</li>
-        {% empty %}
-            <li>No messages found.</li>
-        {% endfor %}
-    </ul>
-
-    <h2>All Links</h2>
-    <ul>
-        {% for link in links %}
-            <li>
-                {{ link.source_message.content }} 
-                <strong>{{ link.link_type }}</strong> 
-                {{ link.target_message.content }}
-            </li>
-        {% empty %}
-            <li>No links found.</li>
-        {% endfor %}
-    </ul>
-
-
-
-    <!-- Include Vis.js -->
-    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-
-    <!-- Container for the graph -->
+    {% include 'partials/post_message_form.html' %}
+    {% include 'partials/messages_list.html' %}
+    {% include 'partials/links_list.html' %}
     <div id="network" style="width: 600px; height: 400px;"></div>
-
-    <!-- Script to build the graph -->
-    <script>
-        // Fetch the graph data from the Django view
-        fetch('/core/graph_data/')
-            .then(response => response.json())
-            .then(data => {
-                // Create a network
-                var container = document.getElementById('network');
-                var graphData = {
-                    nodes: new vis.DataSet(data.nodes),
-                    edges: new vis.DataSet(data.edges)
-                };
-                var options = {};  // You can specify options for the layout and appearance
-                var network = new vis.Network(container, graphData, options);
-            });
-    </script>
-
-
-
-    <h2>Create a Link</h2>
-    <form method="post" action="{% url 'create_link' %}">
-        {% csrf_token %}
-        <label for="source_message">Source Message:</label><br>
-        <select id="source_message" name="source_message">
-            {% for message in messages %}
-                <option value="{{ message.id }}">{{ message.content }}</option>
-            {% endfor %}
-        </select><br>
-
-        <label for="link_type">Link Type:</label><br>
-        <select id="link_type" name="link_type">
-            <option value="proves">Proves</option>
-            <option value="disproves">Disproves</option>
-            <option value="is_premise_of">Is Premise Of</option>
-            <option value="answers">Answers</option>
-        </select><br>
-
-        <label for="target_message">Target Message:</label><br>
-        <select id="target_message" name="target_message">
-            {% for message in messages %}
-                <option value="{{ message.id }}">{{ message.content }}</option>
-            {% endfor %}
-        </select><br>
-        <input type="submit" value="Create Link">
-    </form>
-
+    {% include 'partials/create_link_form.html' %}
 </body>
 </html>

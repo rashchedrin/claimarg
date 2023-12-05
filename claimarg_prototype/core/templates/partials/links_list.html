@@ -1,0 +1,13 @@
+<!-- templates/partials/links_list.html -->
+<h2>All Links</h2>
+<ul>
+    {% for link in links %}
+        <li>
+            {{ link.source_message.content }} 
+            <strong>{{ link.link_type }}</strong> 
+            {{ link.target_message.content }}
+        </li>
+    {% empty %}
+        <li>No links found.</li>
+    {% endfor %}
+</ul>

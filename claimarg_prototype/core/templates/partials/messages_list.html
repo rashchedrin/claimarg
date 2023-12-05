@@ -1,0 +1,9 @@
+<!-- templates/partials/messages_list.html -->
+<h2>All Messages</h2>
+<ul>
+    {% for message in messages %}
+        <li><strong>{{ message.type }}:</strong> {{ message.content }}</li>
+    {% empty %}
+        <li>No messages found.</li>
+    {% endfor %}
+</ul>
