@@ -26,6 +26,7 @@
 
 4. **Apply Migrations**:
    ```
+   cd claimarg_prototype
    python manage.py makemigrations
    python manage.py migrate
    ```
