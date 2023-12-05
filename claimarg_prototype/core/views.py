@@ -21,3 +21,8 @@ def post_message(request):
 
 def success(request):
     return render(request, 'success.html')
+
+
+def show_messages(request):
+    messages = Message.objects.all()  # Retrieve all messages
+    return render(request, 'show_messages.html', {'messages': messages})

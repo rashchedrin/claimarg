@@ -1,0 +1,18 @@
+<!-- core/templates/show_messages.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Messages</title>
+</head>
+<body>
+    <h1>All Messages</h1>
+    <ul>
+        {% for message in messages %}
+            <li><strong>{{ message.type }}:</strong> {{ message.content }}</li>
+        {% empty %}
+            <li>No messages found.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'post_message' %}">Post a new message</a>
+</body>
+</html>
