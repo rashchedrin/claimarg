@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 popup.style.left = left + "px";
 
                 var deleteButton = document.createElement("button");
-                deleteButton.innerHTML = "D";
+                deleteButton.innerHTML = "Delete";
                 deleteButton.onclick = function() {
                     deleteNode(nodeId);
                     document.body.removeChild(popup); // Remove the popup after clicking
