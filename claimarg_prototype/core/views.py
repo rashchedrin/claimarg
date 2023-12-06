@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -75,7 +77,16 @@ def delete_link(request):
 
 def delete_message(request):
     if request.method == 'POST':
-        message_id = request.POST.get('message_id')
-        Message.objects.filter(id=message_id).delete()
-        return HttpResponseRedirect(reverse('post_message'))
+        if request.content_type == 'application/json':
+            # Handle AJAX request
+            data = json.loads(request.body)
+            message_id = data.get('message_id')
+            Message.objects.filter(id=message_id).delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            # Handle regular form submission
+            message_id = request.POST.get('message_id')
+            Message.objects.filter(id=message_id).delete()
+            return HttpResponseRedirect(reverse('post_message'))
+
     return HttpResponseRedirect(reverse('post_message'))

@@ -3,15 +3,15 @@
 <head>
     <title>Messages</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script src="{% static 'js/graph.js' %}"></script>
+    <script src="{% static 'js/graph.js' %}?v=1.0.1"></script>
 </head>
 <body>
     {% include 'partials/post_message_form.html' %}
+    {% include 'partials/create_link_form.html' %}
+    <div id="network" style="width: 600px; height: 400px;"></div>
     {% include 'partials/messages_list.html' %}
     {% include 'partials/links_list.html' %}
-    <div id="network" style="width: 600px; height: 400px;"></div>
-    {% include 'partials/create_link_form.html' %}
 </body>
 </html>
