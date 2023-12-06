@@ -3,6 +3,12 @@
 <ul>
     {% for link in links %}
         <li>
+            <!-- Delete link form -->
+            <form action="{% url 'delete_link' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="link_id" value="{{ link.id }}">
+                <input type="submit" value="Delete">
+            </form>
             {{ link.source_message.content }} 
             <strong>{{ link.link_type }}</strong> 
             {{ link.target_message.content }}

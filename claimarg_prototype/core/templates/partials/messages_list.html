@@ -2,7 +2,15 @@
 <h2>All Messages</h2>
 <ul>
     {% for message in messages %}
-        <li><strong>{{ message.type }}:</strong> {{ message.content }}</li>
+        <li>
+            <!-- Delete message form -->
+            <form action="{% url 'delete_message' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="message_id" value="{{ message.id }}">
+                <input type="submit" value="Delete">
+            </form>
+            <strong>{{ message.type }}:</strong> {{ message.content }}
+        </li>
     {% empty %}
         <li>No messages found.</li>
     {% endfor %}

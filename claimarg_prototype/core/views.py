@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Link, Message
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 
 
 def post_message(request):
@@ -62,3 +62,20 @@ def graph_data(request):
               'link_type': link.link_type} for link in Link.objects.all()]
     
     return JsonResponse({'nodes': nodes, 'edges': edges})
+
+
+def delete_link(request):
+    if request.method == 'POST':
+        link_id = request.POST.get('link_id')
+        Link.objects.filter(id=link_id).delete()
+        return HttpResponseRedirect(reverse('post_message'))
+    # Redirect to home or an appropriate page if not a POST request
+    return HttpResponseRedirect(reverse('post_message'))
+
+
+def delete_message(request):
+    if request.method == 'POST':
+        message_id = request.POST.get('message_id')
+        Message.objects.filter(id=message_id).delete()
+        return HttpResponseRedirect(reverse('post_message'))
+    return HttpResponseRedirect(reverse('post_message'))
