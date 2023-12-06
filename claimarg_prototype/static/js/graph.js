@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 popup.style.top = top + "px";
                 popup.style.left = left + "px";
 
+                // Delete button
                 var deleteButton = document.createElement("button");
                 deleteButton.innerHTML = "Delete";
                 deleteButton.onclick = function() {
@@ -65,6 +66,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.body.removeChild(popup); // Remove the popup after clicking
                 };
                 popup.appendChild(deleteButton);
+
+                // Close button
+                var closeButton = document.createElement("button");
+                closeButton.innerHTML = "Close";
+                closeButton.onclick = function() {
+                    document.body.removeChild(popup);
+                };
+                popup.appendChild(closeButton);
+
 
                 document.body.appendChild(popup);
             }
