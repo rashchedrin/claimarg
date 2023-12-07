@@ -17,7 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from claimarg_prototype.views import home
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include('core.urls')),  # Include the URLs from the core app
+    path('accounts/', include('allauth.urls')),  # allauth URLs
+    path('', home, name='home'),
 ]

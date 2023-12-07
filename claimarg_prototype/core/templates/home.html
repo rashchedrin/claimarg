@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to Claimarg</h1>
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.email }}!</p>
+    <a href="{% url 'post_message' %}">Post a Message</a> <!-- Adjust the URL name as needed -->
+    <a href="{% url 'account_logout' %}">Logout</a>
+{% else %}
+    <p>Welcome, guest!</p>
+    <a href="{% url 'account_login' %}">Sign In</a>
+    <a href="{% url 'account_signup' %}">Sign Up</a>
+{% endif %}
+{% endblock %}
