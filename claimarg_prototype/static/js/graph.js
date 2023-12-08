@@ -104,9 +104,13 @@ function addDeleteButton(nodeId, popup, graphData) {
     var deleteButton = document.createElement("button");
     deleteButton.innerHTML = "Delete";
     deleteButton.onclick = function() {
-        deleteNode(nodeId, graphData);
-        if (popup.parentNode) {
-            popup.parentNode.removeChild(popup);
+        // Display confirmation dialog
+        var confirmDelete = confirm("Are you sure you want to delete this node?");
+        if (confirmDelete) {
+            deleteNode(nodeId, graphData);
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
         }
     };
     popup.appendChild(deleteButton);
