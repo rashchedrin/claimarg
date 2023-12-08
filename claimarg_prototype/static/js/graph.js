@@ -25,8 +25,8 @@ function initializeNetwork(graphData, container) {
               direction: 'DU',
               blockShifting: false,
               parentCentralization: true,
-              nodeSpacing: 300,
-              treeSpacing: 300,
+              nodeSpacing: 310,
+              treeSpacing: 320,
             },
           },
           physics: {
@@ -41,7 +41,16 @@ function initializeNetwork(graphData, container) {
             smooth: false,  // Make edges straight
             physics: false,
             arrows: { to: { enabled: true, scaleFactor: 1, type: 'arrow' } }
-        }
+        },
+        nodes: {
+            shape: 'box', // Set the shape to 'box' for rectangles
+            widthConstraint: {
+                maximum: 300 // Limit node width to 300px
+            },
+            font: {
+                multi: 'html' // Enable HTML for multiline text
+            },
+        },
     };
 
     var network = new vis.Network(container, graphData, options);
