@@ -6,13 +6,13 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script src="{% static 'js/graph.js' %}?v=1.0.1"></script>
+    <script src="{% static 'js/graph.js' %}?v=1.0.2"></script>
 </head>
 <body>
     {% include 'partials/account_links.html' %}
     {% include 'partials/post_message_form.html' %}
     {% include 'partials/create_link_form.html' %}
-    <div id="network" style="width: 600px; height: 400px;"></div>
+    <div id="network" style="width: 100%; height: 400px;"></div>
     {% include 'partials/messages_list.html' %}
     {% include 'partials/links_list.html' %}
 </body>
