@@ -42,10 +42,6 @@ function initializeNetwork(graphData, container) {
             physics: false,
             arrows: { to: { enabled: true, scaleFactor: 1, type: 'arrow' } }
         }
-        // physics: {
-        //     enabled: true  // Disable physics entirely
-        // }
-        // Other options as needed
     };
 
     var network = new vis.Network(container, graphData, options);
