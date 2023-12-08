@@ -183,3 +183,18 @@ function getParameterByName(name, url) {
     // Get the parameter value by name
     return searchParams.get(name);
 }
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeAllPopups();
+    }
+});
+
+function closeAllPopups() {
+    var popups = document.querySelectorAll('.popup-menu');
+    popups.forEach(function(popup) {
+        if (popup.parentNode) {
+            popup.parentNode.removeChild(popup);
+        }
+    });
+}
