@@ -144,6 +144,7 @@ function getCookie(name) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    var messageId = getParameterByName('messageId');
     fetch('/core/graph_data/')
         .then(response => response.json())
         .then(data => {
@@ -156,6 +157,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var network = initializeNetwork(graphData, container);
 
+            // If messageId is present, focus on the node with that ID
+            if (messageId) {
+                network.selectNodes([messageId]);
+                network.focus(messageId, { scale: 1 });
+            }
+
             network.on("click", function(params) {
                 if (params.nodes.length > 0) {
                     var nodeId = params.nodes[0];
@@ -166,3 +173,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
 
+// Function to get URL parameter by name
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+
+    // Create a URLSearchParams object with the given URL
+    var searchParams = new URLSearchParams(new URL(url).search);
+
+    // Get the parameter value by name
+    return searchParams.get(name);
+}

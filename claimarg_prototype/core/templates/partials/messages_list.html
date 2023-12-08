@@ -9,7 +9,10 @@
                 <input type="hidden" name="message_id" value="{{ message.id }}">
                 <input type="submit" value="Delete">
             </form>
-            <strong>{{ message.type }}:</strong> {{ message.content }}
+
+            <!-- message link -->
+            <strong>{{ message.type }}:</strong>
+            <a href="{% url 'post_message' %}?messageId={{ message.id }}">{{ message.content }}</a>
         </li>
     {% empty %}
         <li>No messages found.</li>
