@@ -63,8 +63,19 @@ function createPopupMenu(nodeId, coordinates, container, graphData) {
 
     addDeleteButton(nodeId, popup, graphData);
     addCloseButton(popup);
+    addCopyLinkButton(nodeId, popup)
 
     document.body.appendChild(popup);
+}
+
+function addCopyLinkButton(nodeId, popup) {
+    // Create a button to copy the link to clicked node
+    var copyLinkButton = document.createElement("button");
+    copyLinkButton.innerHTML = "Copy Link";
+    copyLinkButton.onclick = function() {
+        copyNodeLink(nodeId);
+    };
+    popup.appendChild(copyLinkButton);
 }
 
 function createPopupElement(coordinates, container) {
@@ -197,4 +208,21 @@ function closeAllPopups() {
             popup.parentNode.removeChild(popup);
         }
     });
+}
+
+
+// Function to copy the link to the node
+function copyNodeLink(nodeId) {
+    var nodeLink = window.location.origin + '/core/post_message/?messageId=' + nodeId;
+
+    // Create a temporary textarea to copy the link
+    var textarea = document.createElement('textarea');
+    textarea.value = nodeLink;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    // Optionally, provide feedback to the user (e.g., display a tooltip)
+    alert('Link copied to clipboard!');
 }
