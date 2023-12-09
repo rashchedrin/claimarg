@@ -19,7 +19,7 @@ function initializeNetwork(graphData, container) {
         layout: {
             hierarchical: {
               enabled: true,
-              levelSeparation: 50,
+              levelSeparation: 100,
               edgeMinimization: true,
               sortMethod: 'directed',
               direction: 'DU',
@@ -60,6 +60,14 @@ function initializeNetwork(graphData, container) {
 // Function to create a popup menu
 function createPopupMenu(nodeId, coordinates, container, graphData) {
     var popup = createPopupElement(coordinates, container);
+
+    var nodeData = graphData.nodes.get(nodeId);
+
+    // Add the node's text to the popup
+    var textElement = document.createElement("p");
+    textElement.textContent = nodeData.label;
+    textElement.style.userSelect = 'text'; // Ensure the text is selectable
+    popup.appendChild(textElement);
 
     addDeleteButton(nodeId, popup, graphData);
     addCloseButton(popup);
@@ -180,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             network.on("click", function(params) {
+                closeAllPopups()
                 if (params.nodes.length > 0) {
                     var nodeId = params.nodes[0];
                     var nodePosition = params.pointer.DOM;
