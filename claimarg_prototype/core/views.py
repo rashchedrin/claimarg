@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Link, Message
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 
 
