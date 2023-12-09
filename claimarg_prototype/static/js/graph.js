@@ -19,7 +19,7 @@ function initializeNetwork(graphData, container) {
         layout: {
             hierarchical: {
               enabled: true,
-              levelSeparation: 50,
+              levelSeparation: 100,
               edgeMinimization: true,
               sortMethod: 'directed',
               direction: 'DU',
