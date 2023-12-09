@@ -180,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             network.on("click", function(params) {
+                closeAllPopups()
                 if (params.nodes.length > 0) {
                     var nodeId = params.nodes[0];
                     var nodePosition = params.pointer.DOM;
