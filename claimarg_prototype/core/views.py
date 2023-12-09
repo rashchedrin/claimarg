@@ -81,22 +81,31 @@ def show_messages(request):
 
 def create_link(request):
     if request.method == 'POST':
-        source_id = request.POST.get('source_message')
-        target_id = request.POST.get('target_message')
-        source_message = Message.objects.get(id=source_id)
-        target_message = Message.objects.get(id=target_id)
-        default_user = User.objects.get(username='default')
+        data = json.loads(request.body)
+        source_id = data.get('source_message')
+        target_id = data.get('target_message')
 
-        link_type = request.POST.get('link_type')
+        try:
+            source_message = Message.objects.get(id=source_id)
+            target_message = Message.objects.get(id=target_id)
+            default_user = User.objects.get(username='default')
+            link_type = data.get('link_type')
 
-        Link.objects.create(
-            source_message=source_message, 
-            target_message=target_message, 
-            author=default_user,
-            link_type=link_type
-        )
-        return redirect('post_message')  # Redirect to the main page
+            Link.objects.create(
+                source_message=source_message, 
+                target_message=target_message, 
+                author=default_user,
+                link_type=link_type
+            )
+            return redirect('post_message') 
+        except Message.DoesNotExist:
+            return JsonResponse({"error": "Message not found"}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
+    # GET request or other methods
     return render(request, 'create_link.html')
 
 

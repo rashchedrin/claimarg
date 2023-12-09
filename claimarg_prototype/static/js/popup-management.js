@@ -1,4 +1,5 @@
-import { addNewMessageAndLink, deleteNode } from './node-edge-management.js';
+import { addNewMessageAndLink, deleteNode, createLinkBetweenNodes } from './node-edge-management.js';
+import { getParameterByName } from './utils.js';
 
 // Declare configuration arrays as pairs
 const messageTypeOptions = [['Claim', 'claim'], ['Question', 'question'], ['Argument', 'argument']];
@@ -111,6 +112,15 @@ function createSelect(options, id) {
     return select;
 }
 
+function extractNodeIdFromURL(url) {
+    try {
+        const messageId = getParameterByName('messageId', url);
+        return messageId ? parseInt(messageId, 10) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
 function showAddMessageForm(nodeId, popup, graphData) {
     // Create form elements
     const form = document.createElement('form');
@@ -138,7 +148,15 @@ function showAddMessageForm(nodeId, popup, graphData) {
         const linkType = linkTypeSelect.value;
 
         // Add a new message and link
-        addNewMessageAndLink(content, type, linkType, nodeId, graphData);
+
+        const sourceNodeId = extractNodeIdFromURL(content);
+
+        if (sourceNodeId && graphData.nodes.get(sourceNodeId)) {
+            // Content is a URL pointing to another node, create a link
+            createLinkBetweenNodes(sourceNodeId, nodeId, graphData, linkType);
+        } else {
+            addNewMessageAndLink(content, type, linkType, nodeId, graphData);
+        }
 
         // Remove the form from the popup
         if (form.parentNode) {
