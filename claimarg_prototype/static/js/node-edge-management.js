@@ -47,7 +47,15 @@ function addNewMessageAndLink(content, type, linkType, sourceNodeId, graphData) 
             target_message_id: sourceNodeId // Include sourceNodeId as the target_message_id
         })
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+            // Handle non-OK responses
+                const errorMsg = 'Network response was not ok.';
+                displayErrorMessage(errorMsg);
+                throw new Error(errorMsg);
+            }
+            return response.json()
+        })
         .then(data => {
         // Add the new message to the graph data
             graphData.nodes.add({
