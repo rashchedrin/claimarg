@@ -61,6 +61,14 @@ function initializeNetwork(graphData, container) {
 function createPopupMenu(nodeId, coordinates, container, graphData) {
     var popup = createPopupElement(coordinates, container);
 
+    var nodeData = graphData.nodes.get(nodeId);
+
+    // Add the node's text to the popup
+    var textElement = document.createElement("p");
+    textElement.textContent = nodeData.label;
+    textElement.style.userSelect = 'text'; // Ensure the text is selectable
+    popup.appendChild(textElement);
+
     addDeleteButton(nodeId, popup, graphData);
     addCloseButton(popup);
     addCopyLinkButton(nodeId, popup);
