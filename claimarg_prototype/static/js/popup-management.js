@@ -160,17 +160,13 @@ function addAddMessageButton(nodeId, popup, graphData) {
 // Function to copy the link to the node
 function copyNodeLink(nodeId) {
     const nodeLink = window.location.origin + '/core/post_message/?messageId=' + nodeId;
-
-    // Create a temporary textarea to copy the link
-    const textarea = document.createElement('textarea');
-    textarea.value = nodeLink;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-
-    // Optionally, provide feedback to the user (e.g., display a tooltip)
-    alert('Link copied to clipboard!');
+    navigator.clipboard.writeText(nodeLink)
+        .then(() => {
+            alert('Link copied to clipboard!');
+        })
+        .catch(err => {
+            console.error('Could not copy text: ', err);
+        });
 }
 
 export { createPopupMenu, closeAllPopups, createSelect };
