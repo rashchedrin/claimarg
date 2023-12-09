@@ -69,9 +69,7 @@ function addDeleteButton(nodeId, popup, graphData) {
         const confirmDelete = confirm('Are you sure you want to delete this node?');
         if (confirmDelete) {
             deleteNode(nodeId, graphData);
-            if (popup.parentNode) {
-                popup.parentNode.removeChild(popup);
-            }
+            closeAllPopups();
         }
     };
     popup.appendChild(deleteButton);
