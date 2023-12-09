@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Link, Message
 from django.http import HttpResponseRedirect, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 
 def post_message(request):
@@ -23,6 +25,50 @@ def post_message(request):
     messages = Message.objects.all()  # Retrieve all messages for display
     links = Link.objects.all()  # Retrieve all messages for display
     return render(request, 'post_and_show_messages.html', {'messages': messages, 'links': links})
+
+
+@transaction.atomic
+def add_message(request):
+    if request.method == 'POST':
+        message_content = request.POST.get('content')
+        message_type = request.POST.get('type')
+        link_type = request.POST.get('link_type')
+        target_message_id = request.POST.get('target_message_id')  # Add this line
+
+        try:
+            # Retrieve the default user
+            default_user = User.objects.get(username='default')
+        except User.DoesNotExist:
+            # Handle the case where the default user doesn't exist
+            return JsonResponse({'error': 'Default user does not exist. Please create the default user.'}, status=500)
+
+        # Create the message with the correct user
+        new_message = Message.objects.create(
+            content=message_content,
+            type=message_type,
+            author=default_user
+        )
+
+        try:
+            # Retrieve the target message
+            target_message = Message.objects.get(id=target_message_id)
+        except Message.DoesNotExist:
+            # Handle the case where the target message doesn't exist
+            return JsonResponse({'error': 'Target message does not exist.'}, status=400)
+
+        # Create the link with the target message
+        link = Link.objects.create(
+            source_message=new_message,
+            target_message=target_message,
+            link_type=link_type,
+            author=default_user
+        )
+
+        # Return the new message ID in the JSON response
+        return JsonResponse({'message_id': new_message.id})
+
+    # Handle GET requests or other cases
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 
 def success(request):
