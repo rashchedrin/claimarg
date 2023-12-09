@@ -12,8 +12,24 @@ function deleteNode(nodeId, graphData) {
     }).then(response => {
         if (response.ok) {
             graphData.nodes.remove(nodeId); // Remove the node from the graph
+        } else {
+            // Handle non-OK responses
+            response.json().then(data => {
+                displayErrorMessage(`Failed to delete node: ${data.error || 'Unknown error'}`);
+            }).catch(parseError => {
+                displayErrorMessage('Failed to parse server response');
+            });
         }
+    }).catch(networkError => {
+        // Handle network errors
+        displayErrorMessage('Network error occurred while trying to delete node');
     });
+}
+
+function displayErrorMessage(message) {
+    // Implement how you want to display the error message to the user
+    // For example, using an alert or inserting the message into a specific element on your webpage
+    alert(message); // This is a simple example using alert; consider using a more user-friendly approach
 }
 
 function addNewMessageAndLink(content, type, linkType, sourceNodeId, graphData) {
