@@ -1,44 +1,47 @@
+/* global vis */
+
 function processEdgeColors(edges) {
     return edges.map(edge => {
-        var colorMap = {
-            'proves': 'green',
-            'disproves': 'red',
-            'answers': 'purple',
-            'is_premise_of': 'orange'
+        const colorMap = {
+            proves: 'green',
+            disproves: 'red',
+            answers: 'purple',
+            is_premise_of: 'orange'
         };
-        var color = colorMap[edge.link_type] || 'black'; // Default color
-        return { ...edge, 
-            color: color,
-            margin: 20, 
+        const color = colorMap[edge.link_type] || 'black'; // Default color
+        return {
+            ...edge,
+            color,
+            margin: 20
         };
     });
 }
 
 function initializeNetwork(graphData, container) {
-    var options = {
+    const options = {
         layout: {
             hierarchical: {
-              enabled: true,
-              levelSeparation: 100,
-              edgeMinimization: true,
-              sortMethod: 'directed',
-              direction: 'DU',
-              blockShifting: false,
-              parentCentralization: true,
-              nodeSpacing: 310,
-              treeSpacing: 320,
-            },
-          },
-          physics: {
+                enabled: true,
+                levelSeparation: 100,
+                edgeMinimization: true,
+                sortMethod: 'directed',
+                direction: 'DU',
+                blockShifting: false,
+                parentCentralization: true,
+                nodeSpacing: 310,
+                treeSpacing: 320
+            }
+        },
+        physics: {
             enabled: false,
             hierarchicalRepulsion: {
-              nodeDistance: 0,
-              springLength: 0,
-              avoidOverlap: 0.5,
-            },
-          },
+                nodeDistance: 0,
+                springLength: 0,
+                avoidOverlap: 0.5
+            }
+        },
         edges: {
-            smooth: false,  // Make edges straight
+            smooth: false, // Make edges straight
             physics: false,
             arrows: { to: { enabled: true, scaleFactor: 1, type: 'arrow' } }
         },
@@ -49,11 +52,11 @@ function initializeNetwork(graphData, container) {
             },
             font: {
                 multi: 'html' // Enable HTML for multiline text
-            },
-        },
+            }
+        }
     };
 
-    var network = new vis.Network(container, graphData, options);
+    const network = new vis.Network(container, graphData, options);
     return network;
 }
 

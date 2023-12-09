@@ -1,3 +1,5 @@
+/* global vis */
+
 import { processEdgeColors, initializeNetwork } from './graph-initialization.js';
 import { createPopupMenu, closeAllPopups } from './popup-management.js';
 import { getParameterByName } from './utils.js';
