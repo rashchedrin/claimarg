@@ -8,3 +8,5 @@ __pycache__/
 venv-claimarg-prototype/
 **/__pycache__/
 dev-notes/
+.vscode/
+node_modules/

@@ -1,0 +1,26 @@
+{
+  "name": "claimarg-prototype",
+  "version": "1.0.0",
+  "description": "`claimarg` is a Django-based web application designed for structured argumentation. It allows users to post messages categorized as claims, arguments, or questions, and displays all posted messages on a single page.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rashchedrin/claimarg-prototype.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rashchedrin/claimarg-prototype/issues"
+  },
+  "homepage": "https://github.com/rashchedrin/claimarg-prototype#readme",
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.3.1",
+    "eslint-plugin-promise": "^6.1.1"
+  }
+}
