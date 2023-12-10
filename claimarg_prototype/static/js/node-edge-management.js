@@ -88,7 +88,7 @@ function createLinkBetweenNodes(sourceNodeId, targetNodeId, graphData, linkType)
     };
 
     // Make a POST request to the server
-    fetch('/core/create_link/', {
+    fetch('/core/create_link_ajax/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ from django.urls import reverse
 from .models import Link, Message
 from django.http import HttpResponseRedirect, JsonResponse
 from django.db import transaction
+from django.views.decorators.http import require_http_methods
 
 
 def post_message(request):
@@ -81,15 +82,14 @@ def show_messages(request):
 
 def create_link(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        source_id = data.get('source_message')
-        target_id = data.get('target_message')
+        source_id = request.POST.get('source_message')
+        target_id = request.POST.get('target_message')
+        link_type = request.POST.get('link_type')
 
         try:
             source_message = Message.objects.get(id=source_id)
             target_message = Message.objects.get(id=target_id)
             default_user = User.objects.get(username='default')
-            link_type = data.get('link_type')
 
             Link.objects.create(
                 source_message=source_message, 
@@ -97,16 +97,48 @@ def create_link(request):
                 author=default_user,
                 link_type=link_type
             )
-            return redirect('post_message') 
-        except Message.DoesNotExist:
-            return JsonResponse({"error": "Message not found"}, status=404)
-        except User.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+            return redirect('post_message')  # Redirect to the main page
 
-    # GET request or other methods
-    return render(request, 'create_link.html')
+        except Message.DoesNotExist:
+            # Handle the error appropriately or redirect with an error message
+            return HttpResponse('Message not found', status=404)
+        except User.DoesNotExist:
+            # Handle the error appropriately or redirect with an error message
+            return HttpResponse('Default user not found', status=404)
+        except Exception as e:
+            # Log the exception and redirect with an error message
+            return HttpResponse('An error occurred', status=500)
+
+
+
+@require_http_methods(["POST"])  # Ensure this view only accepts POST requests
+def create_link_ajax(request):
+    try:
+        data = json.loads(request.body)
+        source_id = data.get('source_message')
+        target_id = data.get('target_message')
+        link_type = data.get('link_type')
+
+        source_message = Message.objects.get(id=source_id)
+        target_message = Message.objects.get(id=target_id)
+        default_user = User.objects.get(username='default')
+
+        Link.objects.create(
+            source_message=source_message, 
+            target_message=target_message, 
+            author=default_user,
+            link_type=link_type
+        )
+        return JsonResponse({"status": "success"})
+
+    except Message.DoesNotExist:
+        return JsonResponse({"error": "Message not found"}, status=404)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def graph_data(request):
