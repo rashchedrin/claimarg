@@ -108,11 +108,15 @@ function createLinkBetweenNodes(sourceNodeId, targetNodeId, graphData, linkType)
             // Optionally, refresh or update the network graph here
         } else {
             // Handle errors, e.g., display a message to the user
-            console.error('Failed to create link:', response.statusText);
+            const errorMsg = 'Failed to create link: ' + response.statusText;
+            console.error(errorMsg);
+            displayErrorMessage(errorMsg);
         }
     }).catch(error => {
         // Handle network errors
-        console.error('Network error:', error);
+        const errorMsg = 'Network error: ' + error.message;
+        console.error(errorMsg);
+        displayErrorMessage(errorMsg);
     });
 }
 
