@@ -3,10 +3,11 @@ import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import Link, Message
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
+
+from .models import Link, Message
 
 
 def post_message(request):
@@ -40,7 +41,10 @@ def add_message(request):
             default_user = User.objects.get(username='default')
         except User.DoesNotExist:
             # Handle the case where the default user doesn't exist
-            return JsonResponse({'error': 'Default user does not exist. Please create the default user.'}, status=500)
+            return JsonResponse(
+                {'error': 'Default user does not exist. Please create the default user.'},
+                status=500
+            )
 
         # Create the message with the correct user
         new_message = Message.objects.create(
@@ -57,7 +61,7 @@ def add_message(request):
             return JsonResponse({'error': 'Target message does not exist.'}, status=400)
 
         # Create the link with the target message
-        link = Link.objects.create(
+        Link.objects.create(
             source_message=new_message,
             target_message=target_message,
             link_type=link_type,
@@ -92,8 +96,8 @@ def create_link(request):
             default_user = User.objects.get(username='default')
 
             Link.objects.create(
-                source_message=source_message, 
-                target_message=target_message, 
+                source_message=source_message,
+                target_message=target_message,
                 author=default_user,
                 link_type=link_type
             )
@@ -105,10 +109,9 @@ def create_link(request):
         except User.DoesNotExist:
             # Handle the error appropriately or redirect with an error message
             return HttpResponse('Default user not found', status=404)
-        except Exception as e:
+        except Exception:
             # Log the exception and redirect with an error message
             return HttpResponse('An error occurred', status=500)
-
 
 
 @require_http_methods(["POST"])  # Ensure this view only accepts POST requests
@@ -124,8 +127,8 @@ def create_link_ajax(request):
         default_user = User.objects.get(username='default')
 
         Link.objects.create(
-            source_message=source_message, 
-            target_message=target_message, 
+            source_message=source_message,
+            target_message=target_message,
             author=default_user,
             link_type=link_type
         )
@@ -142,13 +145,13 @@ def create_link_ajax(request):
 
 
 def graph_data(request):
-    nodes = [{'id': message.id, 
-              'label': message.content, 
+    nodes = [{'id': message.id,
+              'label': message.content,
               'group': message.type} for message in Message.objects.all()]
-    edges = [{'from': link.source_message.id, 
-              'to': link.target_message.id, 
+    edges = [{'from': link.source_message.id,
+              'to': link.target_message.id,
               'link_type': link.link_type} for link in Link.objects.all()]
-    
+
     return JsonResponse({'nodes': nodes, 'edges': edges})
 
 
