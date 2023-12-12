@@ -17,7 +17,6 @@ class Message(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-
 class Link(models.Model):
     LINK_TYPES = (
         ('proves', 'Proves'),
@@ -26,8 +25,16 @@ class Link(models.Model):
         ('answers', 'Answers'),
     )
 
-    source_message = models.ForeignKey(Message, related_name='source_links', on_delete=models.CASCADE)
-    target_message = models.ForeignKey(Message, related_name='target_links', on_delete=models.CASCADE, null=True, blank=True)
+    source_message = models.ForeignKey(
+        Message,
+        related_name='source_links',
+        on_delete=models.CASCADE)
+    target_message = models.ForeignKey(
+        Message,
+        related_name='target_links',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)
     target_link = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -35,6 +42,6 @@ class Link(models.Model):
 
     # Ensure that either target_message or target_link is set, but not both.
     def clean(self):
-        if (self.target_message and self.target_link) or (not self.target_message and not self.target_link):
+        if (self.target_message and self.target_link) \
+                or (not self.target_message and not self.target_link):
             raise ValidationError("Either target_message or target_link must be set, but not both.")
-

@@ -79,4 +79,45 @@ function addNewMessageAndLink(content, type, linkType, sourceNodeId, graphData) 
         });
 }
 
-export { addNewMessageAndLink, deleteNode };
+function createLinkBetweenNodes(sourceNodeId, targetNodeId, graphData, linkType) {
+    // Prepare the data to be sent
+    const postData = {
+        source_message: sourceNodeId,
+        target_message: targetNodeId,
+        link_type: linkType
+    };
+
+    // Make a POST request to the server
+    fetch('/core/create_link_ajax/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') // Assuming you have a function to get CSRF token
+        },
+        body: JSON.stringify(postData)
+    }).then(response => {
+        if (response.ok) {
+            // If the POST request was successful, update the graph
+            const processedNewEdge = processEdgeColors([{
+                from: sourceNodeId, // New message is the source
+                to: targetNodeId, // Existing node is the target
+                link_type: linkType
+            }])[0]; // processEdgeColors returns an array, get the first element
+            graphData.edges.add(processedNewEdge);
+
+            // Optionally, refresh or update the network graph here
+        } else {
+            // Handle errors, e.g., display a message to the user
+            const errorMsg = 'Failed to create link: ' + response.statusText;
+            console.error(errorMsg);
+            displayErrorMessage(errorMsg);
+        }
+    }).catch(error => {
+        // Handle network errors
+        const errorMsg = 'Network error: ' + error.message;
+        console.error(errorMsg);
+        displayErrorMessage(errorMsg);
+    });
+}
+
+export { addNewMessageAndLink, deleteNode, createLinkBetweenNodes };
