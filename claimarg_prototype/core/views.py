@@ -149,9 +149,21 @@ def graph_data(request):
 def delete_link(request):
     if request.method == 'POST':
         link_id = request.POST.get('link_id')
-        Link.objects.filter(id=link_id).delete()
-        return HttpResponseRedirect(reverse('post_message'))
-    # Redirect to home or an appropriate page if not a POST request
+
+        try:
+            link = Link.objects.get(id=link_id)
+
+            # Check if the logged-in user is the author of the link
+            if link.author != request.user:
+                return HttpResponse('You do not have permission to delete this link.', status=403)
+
+            link.delete()
+            return HttpResponseRedirect(reverse('post_message'))  # Redirect to the main page
+
+        except Link.DoesNotExist:
+            return HttpResponse('Link not found.', status=404)
+
+    # If it's not a POST request or any other issue, redirect to a safe page
     return HttpResponseRedirect(reverse('post_message'))
 
 
@@ -159,15 +171,28 @@ def delete_link(request):
 def delete_message(request):
     if request.method == 'POST':
         if request.content_type == 'application/json':
-            # Handle AJAX request
-            data = json.loads(request.body)
-            message_id = data.get('message_id')
-            Message.objects.filter(id=message_id).delete()
-            return JsonResponse({'status': 'success'})
+            try:
+                # Handle AJAX request
+                data = json.loads(request.body)
+                message_id = data.get('message_id')
+                message = Message.objects.get(id=message_id)
+                if message.author != request.user:
+                    return JsonResponse(
+                        {'error': 'You do not have permission to delete this message.'}, status=403)
+                message.delete()
+                return JsonResponse({'status': 'success'})
+            except Message.DoesNotExist:
+                return JsonResponse({'error': 'Message not found.'}, status=404)
         else:
-            # Handle regular form submission
-            message_id = request.POST.get('message_id')
-            Message.objects.filter(id=message_id).delete()
-            return HttpResponseRedirect(reverse('post_message'))
-
-    return HttpResponseRedirect(reverse('post_message'))
+            try:
+                # Handle regular form submission
+                message_id = request.POST.get('message_id')
+                message = Message.objects.get(id=message_id)
+                if message.author != request.user:
+                    return HttpResponse(
+                        'You do not have permission to delete this message.',
+                        status=403)
+                return HttpResponseRedirect(reverse('post_message'))
+            except Message.DoesNotExist:
+                return HttpResponse('Message not found.', status=404)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)  # not a POST request
