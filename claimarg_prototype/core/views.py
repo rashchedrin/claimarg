@@ -1,6 +1,7 @@
 import json
 
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
@@ -10,16 +11,16 @@ from django.views.decorators.http import require_http_methods
 from .models import Link, Message
 
 
+@login_required
 def post_message(request):
     if request.method == 'POST':
         message_content = request.POST.get('content')
         message_type = request.POST.get('type')
-        default_user = User.objects.get(username='default')
 
         Message.objects.create(
             content=message_content,
             type=message_type,
-            author=default_user
+            author=request.user
         )
         return redirect(reverse('post_message'))  # Redirect to a success page or home
 
@@ -28,6 +29,7 @@ def post_message(request):
     return render(request, 'post_and_show_messages.html', {'messages': messages, 'links': links})
 
 
+@login_required
 @transaction.atomic
 def add_message(request):
     if request.method == 'POST':
@@ -36,21 +38,11 @@ def add_message(request):
         link_type = request.POST.get('link_type')
         target_message_id = request.POST.get('target_message_id')  # Add this line
 
-        try:
-            # Retrieve the default user
-            default_user = User.objects.get(username='default')
-        except User.DoesNotExist:
-            # Handle the case where the default user doesn't exist
-            return JsonResponse(
-                {'error': 'Default user does not exist. Please create the default user.'},
-                status=500
-            )
-
         # Create the message with the correct user
         new_message = Message.objects.create(
             content=message_content,
             type=message_type,
-            author=default_user
+            author=request.user
         )
 
         try:
@@ -65,7 +57,7 @@ def add_message(request):
             source_message=new_message,
             target_message=target_message,
             link_type=link_type,
-            author=default_user
+            author=request.user
         )
 
         # Return the new message ID in the JSON response
@@ -84,6 +76,7 @@ def show_messages(request):
     return render(request, 'show_messages.html', {'messages': messages})
 
 
+@login_required
 def create_link(request):
     if request.method == 'POST':
         source_id = request.POST.get('source_message')
@@ -93,12 +86,11 @@ def create_link(request):
         try:
             source_message = Message.objects.get(id=source_id)
             target_message = Message.objects.get(id=target_id)
-            default_user = User.objects.get(username='default')
 
             Link.objects.create(
                 source_message=source_message,
                 target_message=target_message,
-                author=default_user,
+                author=request.user,
                 link_type=link_type
             )
             return redirect('post_message')  # Redirect to the main page
@@ -114,6 +106,7 @@ def create_link(request):
             return HttpResponse('An error occurred', status=500)
 
 
+@login_required
 @require_http_methods(["POST"])  # Ensure this view only accepts POST requests
 def create_link_ajax(request):
     try:
@@ -124,20 +117,17 @@ def create_link_ajax(request):
 
         source_message = Message.objects.get(id=source_id)
         target_message = Message.objects.get(id=target_id)
-        default_user = User.objects.get(username='default')
 
         Link.objects.create(
             source_message=source_message,
             target_message=target_message,
-            author=default_user,
+            author=request.user,
             link_type=link_type
         )
         return JsonResponse({"status": "success"})
 
     except Message.DoesNotExist:
         return JsonResponse({"error": "Message not found"}, status=404)
-    except User.DoesNotExist:
-        return JsonResponse({"error": "User not found"}, status=404)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
     except Exception as e:
@@ -155,6 +145,7 @@ def graph_data(request):
     return JsonResponse({'nodes': nodes, 'edges': edges})
 
 
+@login_required
 def delete_link(request):
     if request.method == 'POST':
         link_id = request.POST.get('link_id')
@@ -164,6 +155,7 @@ def delete_link(request):
     return HttpResponseRedirect(reverse('post_message'))
 
 
+@login_required
 def delete_message(request):
     if request.method == 'POST':
         if request.content_type == 'application/json':
