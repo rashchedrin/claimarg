@@ -98,9 +98,6 @@ def create_link(request):
         except Message.DoesNotExist:
             # Handle the error appropriately or redirect with an error message
             return HttpResponse('Message not found', status=404)
-        except User.DoesNotExist:
-            # Handle the error appropriately or redirect with an error message
-            return HttpResponse('Default user not found', status=404)
         except Exception:
             # Log the exception and redirect with an error message
             return HttpResponse('An error occurred', status=500)
