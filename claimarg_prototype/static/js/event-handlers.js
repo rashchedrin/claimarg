@@ -1,7 +1,7 @@
 /* global vis */
 
 import { processEdgeColors, initializeNetwork } from './graph-initialization.js';
-import { createPopupMenu, closeAllPopups } from './popup-management.js';
+import { createPopupMenu, closeAllPopups, createEdgePopupMenu } from './popup-management.js';
 import { getParameterByName } from './utils.js';
 
 document.addEventListener('keydown', function(event) {
@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const nodeId = params.nodes[0];
                     const nodePosition = params.pointer.DOM;
                     createPopupMenu(nodeId, nodePosition, container, graphData);
+                } else if (params.edges.length > 0) {
+                    const edgeId = params.edges[0];
+                    const edgePosition = params.pointer.DOM;
+                    createEdgePopupMenu(edgeId, edgePosition, container, graphData);
                 }
             });
         });

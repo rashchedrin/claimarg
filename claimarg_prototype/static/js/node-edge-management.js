@@ -120,4 +120,29 @@ function createLinkBetweenNodes(sourceNodeId, targetNodeId, graphData, linkType)
     });
 }
 
-export { addNewMessageAndLink, deleteNode, createLinkBetweenNodes };
+function deleteLink(linkId, graphData) {
+    fetch('/core/delete_link/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: new URLSearchParams({ link_id: linkId.toString() })
+    }).then(response => {
+        if (response.ok) {
+            graphData.edges.remove(linkId); // Remove the link from the graph
+        } else {
+            // Handle non-OK responses
+            response.text().then(text => {
+                displayErrorMessage(`Failed to delete link: ${text}`);
+            }).catch(parseError => {
+                displayErrorMessage('Failed to parse server response');
+            });
+        }
+    }).catch(networkError => {
+        // Handle network errors
+        displayErrorMessage('Network error occurred while trying to delete link');
+    });
+}
+
+export { addNewMessageAndLink, deleteNode, deleteLink, createLinkBetweenNodes };

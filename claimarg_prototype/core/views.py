@@ -2,7 +2,6 @@ import json
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.db import transaction
@@ -135,7 +134,8 @@ def graph_data(request):
     nodes = [{'id': message.id,
               'label': message.content,
               'group': message.type} for message in Message.objects.all()]
-    edges = [{'from': link.source_message.id,
+    edges = [{'id': link.id,
+              'from': link.source_message.id,
               'to': link.target_message.id,
               'link_type': link.link_type} for link in Link.objects.all()]
 
