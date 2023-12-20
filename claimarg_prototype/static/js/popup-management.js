@@ -1,4 +1,4 @@
-import { addNewMessageAndLink, deleteNode, createLinkBetweenNodes } from './node-edge-management.js';
+import { addNewMessageAndLink, deleteNode, createLinkBetweenNodes, deleteLink } from './node-edge-management.js';
 import { getParameterByName } from './utils.js';
 
 // Declare configuration arrays as pairs
@@ -187,4 +187,28 @@ function copyNodeLink(nodeId) {
         });
 }
 
-export { createPopupMenu, closeAllPopups, createSelect };
+function createEdgePopupMenu(edgeId, coordinates, container, graphData) {
+    const popup = createPopupElement(coordinates, container);
+
+    // Add options specific to edges
+    addDeleteLinkButton(edgeId, popup, graphData);
+    addCloseButton(popup);
+
+    document.body.appendChild(popup);
+}
+
+function addDeleteLinkButton(edgeId, popup, graphData) {
+    const deleteLinkButton = document.createElement('button');
+    deleteLinkButton.innerHTML = 'Delete Link';
+    deleteLinkButton.onclick = function () {
+        // Confirmation dialog before deleting the link
+        const confirmDelete = confirm('Are you sure you want to delete this link?');
+        if (confirmDelete) {
+            deleteLink(edgeId, graphData);
+            closeAllPopups();
+        }
+    };
+    popup.appendChild(deleteLinkButton);
+}
+
+export { createPopupMenu, closeAllPopups, createSelect, createEdgePopupMenu };
