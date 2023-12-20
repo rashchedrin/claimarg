@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     add_message, create_link, create_link_ajax, delete_link, delete_message,
-    graph_data, post_message, show_messages, success)
+    graph_data, post_message, show_messages, success, add_message_and_link_to_link)
 
 urlpatterns = [
     path('post_message/', post_message, name='post_message'),
@@ -13,4 +13,6 @@ urlpatterns = [
     path('delete_link/', delete_link, name='delete_link'),
     path('delete_message/', delete_message, name='delete_message'),
     path('add_message/', add_message, name='add_message'),
+    path('add_message_and_link_to_link/',
+         add_message_and_link_to_link, name='add_message_and_link_to_link'),
 ]

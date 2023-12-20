@@ -9,9 +9,15 @@
                 <input type="hidden" name="link_id" value="{{ link.id }}">
                 <input type="submit" value="Delete">
             </form>
-            {{ link.source_message.content }} 
-            <strong>{{ link.link_type }}</strong> 
-            {{ link.target_message.content }}
+            {{ link.source_message.content }}
+            <strong>{{ link.link_type }}</strong>
+            {% if link.target_message %}
+                {{ link.target_message.content }}
+            {% elif link.target_link %}
+                Link to Link ID: {{ link.target_link.id }}
+            {% else %}
+                [No Target]
+            {% endif %}
         </li>
     {% empty %}
         <li>No links found.</li>

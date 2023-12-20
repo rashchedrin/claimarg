@@ -136,7 +136,8 @@ def graph_data(request):
               'group': message.type} for message in Message.objects.all()]
     edges = [{'id': link.id,
               'from': link.source_message.id,
-              'to': link.target_message.id,
+              'to': link.target_message.id if link.target_message
+                    else "L" + str(link.target_link.id),
               'link_type': link.link_type} for link in Link.objects.all()]
 
     return JsonResponse({'nodes': nodes, 'edges': edges})
@@ -193,3 +194,37 @@ def delete_message(request):
             except Message.DoesNotExist:
                 return HttpResponse('Message not found.', status=404)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)  # not a POST request
+
+
+@login_required
+@transaction.atomic
+@require_http_methods(["POST"])
+def add_message_and_link_to_link(request):
+    try:
+        # Extract data from request
+        data = json.loads(request.body)
+        content = data['content']
+        message_type = data['type']
+        link_type = data['link_type']
+        link_id = data['link_id']
+
+        # Create the message
+        new_message = Message.objects.create(
+            content=content,
+            type=message_type,
+            author=request.user
+        )
+
+        # Associate message with the link
+        target_link = Link.objects.get(id=link_id)
+        Link.objects.create(
+            source_message=new_message,
+            target_link=target_link,
+            author=request.user,
+            link_type=link_type
+        )
+
+        return JsonResponse({'status': 'success', 'message_id': new_message.id})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
