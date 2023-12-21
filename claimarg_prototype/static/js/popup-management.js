@@ -1,4 +1,10 @@
-import { addNewMessageAndLink, deleteNode, createLinkBetweenNodes, deleteLink } from './node-edge-management.js';
+import {
+    addNewMessageAndLink,
+    deleteNode,
+    createLinkBetweenNodes,
+    deleteLink,
+    addNewMessageAndAssociateWithLink
+} from './node-edge-management.js';
 import { getParameterByName } from './utils.js';
 
 // Declare configuration arrays as pairs
@@ -192,9 +198,49 @@ function createEdgePopupMenu(edgeId, coordinates, container, graphData) {
 
     // Add options specific to edges
     addDeleteLinkButton(edgeId, popup, graphData);
+    addAddMessageToLinkButton(edgeId, popup, graphData);
     addCloseButton(popup);
 
     document.body.appendChild(popup);
+}
+
+function addAddMessageToLinkButton(edgeId, popup, graphData) {
+    const addMessageButton = document.createElement('button');
+    addMessageButton.innerHTML = 'Add Message to Link';
+    addMessageButton.onclick = function() {
+        showAddMessageToLinkForm(edgeId, popup, graphData);
+    };
+    popup.appendChild(addMessageButton);
+}
+
+function showAddMessageToLinkForm(edgeId, popup, graphData) {
+    // Similar to showAddMessageForm, but for adding a message to a link
+    const form = document.createElement('form');
+    const textarea = document.createElement('textarea');
+    const messageTypeSelect = createSelect(messageTypeOptions, 'type');
+    const linkTypeSelect = createSelect(linkTypeOptions, 'linkType'); // Set id attribute
+    const submitButton = document.createElement('button');
+    submitButton.innerHTML = 'Submit';
+
+    form.appendChild(textarea);
+    form.appendChild(messageTypeSelect);
+    form.appendChild(linkTypeSelect);
+    form.appendChild(submitButton);
+
+    form.onsubmit = function(event) {
+        event.preventDefault();
+        const content = textarea.value;
+        const type = messageTypeSelect.value;
+        const linkType = linkTypeSelect.value;
+
+        addNewMessageAndAssociateWithLink(content, type, linkType, edgeId, graphData);
+
+        if (form.parentNode) {
+            form.parentNode.removeChild(form);
+        }
+    };
+
+    popup.appendChild(form);
 }
 
 function addDeleteLinkButton(edgeId, popup, graphData) {

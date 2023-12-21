@@ -145,4 +145,50 @@ function deleteLink(linkId, graphData) {
     });
 }
 
-export { addNewMessageAndLink, deleteNode, deleteLink, createLinkBetweenNodes };
+function addNewMessageAndAssociateWithLink(
+    content,
+    type,
+    linkType,
+    linkId,
+    graphData
+) {
+    fetch('/core/add_message_and_link_to_link/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            content,
+            type,
+            link_id: linkId,
+            link_type: linkType
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+            // Add the new message to the graph data
+                graphData.nodes.add({
+                    id: data.message_id,
+                    label: content,
+                    group: type
+                });
+            // Refresh the graph or perform other updates as needed
+            } else {
+                throw new Error(data.error || 'Unknown error occurred');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            displayErrorMessage('Error occurred while adding message to link');
+        });
+}
+
+export {
+    addNewMessageAndLink,
+    deleteNode,
+    deleteLink,
+    createLinkBetweenNodes,
+    addNewMessageAndAssociateWithLink
+};
