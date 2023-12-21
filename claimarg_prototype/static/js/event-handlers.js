@@ -3,6 +3,7 @@
 import { processEdgeColors, initializeNetwork } from './graph-initialization.js';
 import { createPopupMenu, closeAllPopups, createEdgePopupMenu } from './popup-management.js';
 import { getParameterByName } from './utils.js';
+import { updateVirtualNodePositions } from './layout-management.js';
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
@@ -41,6 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const edgePosition = params.pointer.DOM;
                     createEdgePopupMenu(edgeId, edgePosition, container, graphData);
                 }
+            });
+
+            network.on('initRedraw', function() {
+                updateVirtualNodePositions(network);
             });
         });
 });

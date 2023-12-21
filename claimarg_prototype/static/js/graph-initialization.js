@@ -18,6 +18,43 @@ function processEdgeColors(edges) {
 }
 
 function initializeNetwork(graphData, container) {
+    // Create virtual nodes for links with incoming links
+    // Links may go to links. Vis.js supports only links going to nodes. So, as a workaround,
+    // for every edge with incomming links, we create a "virtual node" associated with that link.
+    // Mapping virtual nodes to their corresponding edges
+    const virtualNodeToEdge = new Map();
+
+    // Update edge targets and create virtual nodes
+    graphData.edges.forEach(edge => {
+        if (typeof edge.to === 'string' && edge.to.startsWith('L')) {
+            const virtualNodeId = 'V' + edge.to.substring(1);
+            virtualNodeToEdge.set(virtualNodeId, edge);
+            edge.to = virtualNodeId; // Update the target of the edge to the virtual node ID
+        }
+    });
+
+    // Create virtual nodes at midpoints of corresponding edges
+    virtualNodeToEdge.forEach((edge, virtualNodeId) => {
+        const sourceNode = graphData.nodes.get(edge.from);
+        const targetNode = virtualNodeId; // Get the original target node
+
+        if (sourceNode && targetNode) {
+            // Add the virtual node at the midpoint
+            graphData.nodes.add({
+                id: virtualNodeId,
+                label: '',
+                group: 'virtual',
+                hidden: false,
+                size: 5,
+                physics: {
+                    enabled: false
+                },
+                shape: 'dot' // Set the shape to 'box' for rectangles
+            });
+        }
+    });
+
+    // Network options
     const options = {
         layout: {
             hierarchical: {
@@ -33,12 +70,12 @@ function initializeNetwork(graphData, container) {
             }
         },
         physics: {
-            enabled: false,
-            hierarchicalRepulsion: {
-                nodeDistance: 0,
-                springLength: 0,
-                avoidOverlap: 0.5
-            }
+            enabled: true
+            // hierarchicalRepulsion: {
+            //     nodeDistance: 0,
+            //     springLength: 0,
+            //     avoidOverlap: 0.5
+            // }
         },
         edges: {
             smooth: false, // Make edges straight
