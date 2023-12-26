@@ -9,6 +9,7 @@
                 <input type="hidden" name="link_id" value="{{ link.id }}">
                 <input type="submit" value="Delete">
             </form>
+            {{ link.id }}
             {{ link.source_message.content }}
             <strong>{{ link.link_type }}</strong>
             {% if link.target_message %}
