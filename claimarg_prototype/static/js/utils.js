@@ -24,4 +24,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
-export { getCookie, getParameterByName };
+function getCurrentUsername() {
+    return JSON.parse(document.getElementById('user_username').textContent);
+}
+
+export { getCookie, getParameterByName, getCurrentUsername };

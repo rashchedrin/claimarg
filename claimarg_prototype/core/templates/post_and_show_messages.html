@@ -9,6 +9,8 @@
     <script type="module" src="{% static 'js/event-handlers.js' %}?v=0.0.0"></script>
 </head>
 <body>
+    {{ request.user.id|json_script:"user_id" }}
+    {{ request.user.username|json_script:"user_username" }}
     {% include 'partials/account_links.html' %}
     {% include 'partials/post_message_form.html' %}
     {% include 'partials/create_link_form.html' %}
