@@ -5,7 +5,7 @@ import {
     deleteLink,
     addNewMessageAndAssociateWithLink
 } from './node-edge-management.js';
-import { getParameterByName } from './utils.js';
+import { getCurrentUsername, getParameterByName } from './utils.js';
 
 // Declare configuration arrays as pairs
 const messageTypeOptions = [['Claim', 'claim'], ['Question', 'question'], ['Argument', 'argument']];
@@ -28,7 +28,10 @@ function createPopupMenu(nodeId, coordinates, container, graphData) {
     textElement.style.userSelect = 'text'; // Ensure the text is selectable
     popup.appendChild(textElement);
 
-    addDeleteButton(nodeId, popup, graphData);
+    const currentUsername = getCurrentUsername();
+    if (nodeData.author === currentUsername) {
+        addDeleteButton(nodeId, popup, graphData);
+    }
     addCloseButton(popup);
     addCopyLinkButton(nodeId, popup);
     addAddMessageButton(nodeId, popup, graphData);

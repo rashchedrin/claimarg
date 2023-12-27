@@ -1,4 +1,4 @@
-import { getCookie } from './utils.js';
+import { getCookie, getCurrentUsername } from './utils.js';
 import { processEdgeColors } from './graph-initialization.js';
 
 function deleteNode(nodeId, graphData) {
@@ -32,6 +32,15 @@ function displayErrorMessage(message) {
     alert(message); // This is a simple example using alert; consider using a more user-friendly approach
 }
 
+function makeNodeDict(content, type, id, author) {
+    return {
+        id, // Ensure this is the correct ID field from the response
+        label: `${content} \n author: ${author}`,
+        group: type,
+        author
+    }
+}
+
 function addNewMessageAndLink(content, type, linkType, sourceNodeId, graphData) {
     // Make a POST request to add a new message
     fetch('/core/add_message/', {
@@ -58,11 +67,8 @@ function addNewMessageAndLink(content, type, linkType, sourceNodeId, graphData) 
         })
         .then(data => {
         // Add the new message to the graph data
-            graphData.nodes.add({
-                id: data.message_id, // Ensure this is the correct ID field from the response
-                label: content,
-                group: type
-            });
+            const currentUsername = getCurrentUsername();
+            graphData.nodes.add(makeNodeDict(content, type, data.message_id, currentUsername));
 
             // Process the new link for color and add to graph data
             // Swapping 'from' and 'to' so the link goes from the new message to the source node
@@ -168,13 +174,9 @@ function addNewMessageAndAssociateWithLink(
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-            // Add the new message to the graph data
-                graphData.nodes.add({
-                    id: data.message_id,
-                    label: content,
-                    group: type
-                });
-            // Refresh the graph or perform other updates as needed
+                // Add the new message to the graph data
+                const currentUsername = getCurrentUsername();
+                graphData.nodes.add(makeNodeDict(content, type, data.message_id, currentUsername));
             } else {
                 throw new Error(data.error || 'Unknown error occurred');
             }
