@@ -133,6 +133,7 @@ def create_link_ajax(request):
 def graph_data(request):
     nodes = [{'id': message.id,
               'label': message.content,
+              'author': message.author.username,
               'group': message.type} for message in Message.objects.all()]
     edges = [{'id': link.id,
               'from': link.source_message.id,

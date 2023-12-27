@@ -93,6 +93,12 @@ function initializeNetwork(graphData, container) {
         }
     };
 
+    graphData.nodes.forEach(node => {
+        if (node.group !== 'virtual') { // Skip virtual nodes
+            node.label = `${node.label} \n author: ${node.author}`; // Append the author's username to the node's label
+        }
+    });
+
     const network = new vis.Network(container, graphData, options);
     return network;
 }
