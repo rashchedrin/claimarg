@@ -31,11 +31,23 @@
    python manage.py migrate
    ```
 
+5. **Enable google auth**:
+   5.1. Create admin account: python manage.py createsuperuser
+   5.2. in http://127.0.0.1:8000/admin/ add sites: localhost:8000 and 127.0.0.1:8000
+   5.3. in social accounts add social application
+      Provider: google
+      name: ClaimArg google login (any will work)
+      Client ID: client ID from console.cloud.google.com -> APIs and services -> credentials
+      Secret key:  Client secret  from that page
+      Sites: all
+
 ## Usage 
 
 To run the server, execute the following command:
 
 ```
+. venv-claimarg-prototype/Scripts/activate
+cd claimarg_prototype
 python manage.py runserver
 ```
 
